@@ -1,0 +1,83 @@
+
+
+CREATE TABLE COVID_details
+(
+    id INT,
+    updated_report DATE,
+    confirmed INT,
+    deaths INT,
+    recovered INT,
+    latitude FLOAT,
+    longitude FLOAT,
+    country_region NVARCHAR (100),
+    admin_region_1 NVARCHAR (100)
+)
+WITH
+(
+     DISTRIBUTION = ROUND_ROBIN, 
+     CLUSTERED COLUMNSTORE INDEX
+)
+ 
+ 
+INSERT INTO COVID_details
+SELECT 
+    id,
+    CAST (updated AS DATE) AS updated_report,
+    confirmed,
+    deaths,
+    recovered,
+    latitude,
+    longitude,
+    country_region,
+    admin_region_1
+from covide_data 
+ 
+SELECT * FROM COVID_details
+
+
+ 
+-- KPI top 10 countries  -> Bar chart
+CREATE VIEW vu_top_countries_
+AS
+SELECT top(10) country_region ,
+       sum (cast (confirmed as BIGINT) /1000) as total_confirmed
+FROM COVID_INFO
+where country_region != 'Worldwide'
+GROUP BY country_region
+ORDER by total_confirmed  desc
+ 
+SELECT * from vu_top_countries_
+ 
+CREATE VIEW vu_covid_summary
+as
+SELECT
+       sum (cast (confirmed as BIGINT) /1000) as total_confirmed,
+       sum (cast (deaths as BIGINT) /1000) as total_deaths,
+       sum (cast (recovered as BIGINT) /1000) as total_recovered,
+       sum (cast (confirmed as BIGINT) /1000) - ( sum (cast (deaths as BIGINT) /1000) + sum (cast (recovered as BIGINT) /1000)) as total_active
+FROM COVID_INFO
+ 
+SELECT * from vu_covid_summary
+ 
+CREATE VIEW vu_covid_trend
+as
+SELECT updated_report ,
+       sum (cast (confirmed as BIGINT) /1000) as total_confirmed,
+       sum (cast (deaths as BIGINT) /1000) as total_deaths,
+       sum (cast (recovered as BIGINT) /1000) as total_recovered
+FROM COVID_INFO
+GROUP BY updated_report
+
+SELECT * from vu_covid_trend
+ 
+CREATE  VIEW vu_location
+as
+SELECT top (10) country_region ,
+       sum (cast (confirmed as BIGINT) /1000) as total_confirmed
+FROM COVID_INFO
+where country_region != 'Worldwide'
+GROUP BY country_region
+ORDER by total_confirmed DESC
+ 
+ 
+SELECT * from vu_location
