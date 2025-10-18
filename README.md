@@ -1,4 +1,4 @@
-# Covid19 Analytics
+
 
 # 🦠 Covid19 Data Analytics on Azure
 
@@ -17,6 +17,10 @@ The workflow consists of three main stages:
 1. **Raw Data Source (Covid19)**
    - Add raw COVID-19 datasets (cases, deaths, recoveries,......)
    - Data stored in Azure Blob Storage or Azure SQL Database
+  
+     <img width="425" height="375" alt="Image" src="https://github.com/user-attachments/assets/96c38cf2-ff02-4554-88cc-a8ce9cc6365a" />
+
+<img width="1315" height="497" alt="Image" src="https://github.com/user-attachments/assets/746835e6-11d2-4fc7-878b-7b8f5d64b05f" />
   
 
 
